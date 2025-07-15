@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+.env
+uploads/
+uploads_resume/
+uploads_query/
+venv/
+
+# Node/React
+node_modules/
+client/build/
+client/.env
+
+# Chroma vectorstore
+chroma_db/

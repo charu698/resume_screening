@@ -1,13 +1,22 @@
-flask
-langchain
-langchain-community
-langchain-core
-bs4
-PyPDF2
-PyPdf
-sentence-transformers
-chromadb
-langchain-huggingface
+Flask==3.1.1
+flask-cors==6.0.1
+python-dotenv==1.1.0
+pandas==2.3.0
+openpyxl==3.1.5
+PyPDF2==3.0.1
+
+# LangChain & Models
+langchain==0.3.26
+langchain-core==0.3.66
+langchain-community==0.3.26
+langchain-openai==0.3.27
+langchain-google-genai==2.0.10
+
+# Google Generative AI (Gemini, PaLM)
+google-generativeai==0.8.5
+
+# Tokenizer for LLMs
+tiktoken==0.9.0
+mysql-connector-python
+Chromadb
 faiss-cpu
-langchain_community
-pandas

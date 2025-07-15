@@ -1,14 +1,16 @@
 from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings
+# from langchain_huggingface import HuggingFaceEmbeddings
 from langchain.schema import Document
 from langchain_community.document_loaders import PyPDFLoader
 from langchain_community.vectorstores import Chroma
-persist_directory = "./chroma_db"
- 
+# NEW (stable)
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_community.vectorstores import FAISS
 
-# ================================ #
-#        Load and Process PDF      #
-# ================================ #
+
+persist_directory = "./chroma_db"
+
+#        Load and Process PDF      
 
 def file_loader(file_path):
     """
@@ -46,9 +48,7 @@ def file_loader(file_path):
         raise
 
 
-# ================================ #
-#     Split Documents to Chunks    #
-# ================================ #
+#     Split Documents to Chunks    
 
 def chunk_extracteddata(docs):
     """
@@ -61,41 +61,48 @@ def chunk_extracteddata(docs):
     return text_splitter.split_documents(docs)
 
 
-# ================================ #
-#      HuggingFace Embeddings      #
-# ================================ #
+#      HuggingFace Embeddings      
 
 def embend_chunks():
     """
-    Creates a HuggingFace embedding function.
+    Creates a HuggingFace embedding function with CPU to avoid meta tensor errors.
     """
-    return HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    return HuggingFaceEmbeddings(
+        model_name="all-MiniLM-L6-v2"
+        # model_kwargs={"device": "cpu"}  # Ensures it works on CPU
+    )
 
 
-# ================================ #
-#       Store in ChromaDB          #
-# ================================ #
+#       Store in ChromaDB          
 
 def vector_store1(embedding_function, split_docs):
     """
     Saves embedded chunks in Chroma vector DB and returns retriever.
     """
-    persist_directory = "./chroma_db"
+    # vectorstore = Chroma.from_documents(
+    #     documents=split_docs,
+    #     embedding=embedding_function,
+    #     persist_directory=persist_directory
+    # )
     
-    vectorstore = Chroma.from_documents(
-        documents=split_docs,
-        embedding=embedding_function,
-        persist_directory=persist_directory
-    )
+    # vectorstore.persist()
+    # print("Vector store persisted to disk")
     
-    vectorstore.persist()
-    print("Vector store persisted to disk")
+    vectorstore = FAISS.from_documents(split_docs, embedding_function)
+    print("vector store created")
+    # vectorstore.save("faiss_index")
     
     return vectorstore.as_retriever()
 
 
 def load_vector_store():
-    embedding_function = HuggingFaceEmbeddings(model_name="all-MiniLM-L6-v2")
+    """
+    Loads the vector store from disk.
+    """
+    embedding_function = HuggingFaceEmbeddings(
+        model_name="all-MiniLM-L6-v2",
+        model_kwargs={"device": "cpu"}  # Force CPU
+    )
     vectorstore = Chroma(
         persist_directory=persist_directory,
         embedding_function=embedding_function
