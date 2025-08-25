@@ -115,9 +115,11 @@ Recruiter dashboard
 
 ATS integration
 
+HR jobs 
+
 👨‍💻 Author
 
-[Your Name]
+CHARU ARORA 
 
 Internship Project @ Incture Technologies
 
